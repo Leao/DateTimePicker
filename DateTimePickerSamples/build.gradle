@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion COMPILE_SDK_VERSION as int
+    buildToolsVersion "$BUILD_TOOLS_VERSION"
 
     defaultConfig {
         applicationId "io.doist.datetimepicker.sample"
-        minSdkVersion 16
-        targetSdkVersion 28
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
         versionCode 1
         versionName "1.0"
     }
@@ -20,6 +20,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT_VERSION"
+
     implementation project(':DateTimePickerLibrary')
 }
