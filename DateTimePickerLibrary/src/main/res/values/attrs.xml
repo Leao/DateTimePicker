@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- The TimePicker style. -->
     <attr name="timePickerStyle" format="reference" />
 
@@ -16,19 +15,6 @@
     <attr name="minTextSize" format="dimension" />
 
     <attr name="maxTextSize" format="dimension" />
-
-    <declare-styleable name="TextAppearance">
-        <!-- Color of the text selection highlight. -->
-        <attr name="android:textColorHighlight" />
-        <!-- Present the text in ALL CAPS. This may use a small-caps form when available. -->
-        <attr name="android:textAllCaps" />
-        <!-- Elegant text height, especially for less compacted complex script text. -->
-        <attr name="android:elegantTextHeight" />
-        <!-- Text letter-spacing. -->
-        <attr name="android:letterSpacing" />
-        <!-- Font feature settings. -->
-        <attr name="android:fontFeatureSettings" />
-    </declare-styleable>
 
     <declare-styleable name="TimePicker">
         <!-- The layout of the time picker. -->
@@ -101,5 +87,4 @@
              selected state. -->
         <attr name="calendarSelectedTextColor" format="color" />
     </declare-styleable>
-
 </resources>
