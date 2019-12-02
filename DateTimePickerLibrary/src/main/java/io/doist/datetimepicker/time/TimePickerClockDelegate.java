@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -38,14 +39,15 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-
 import androidx.annotation.NonNull;
 import androidx.core.view.AccessibilityDelegateCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
 import io.doist.datetimepicker.R;
 import io.doist.datetimepicker.util.DateTimeUtilsCompat;
 import io.doist.datetimepicker.util.ViewStateUtils;
@@ -118,7 +120,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     private Calendar mTempCalendar;
 
     public TimePickerClockDelegate(TimePicker delegator, Context context, AttributeSet attrs,
-            int defStyleAttr, int defStyleRes) {
+                                   int defStyleAttr, int defStyleRes) {
         super(delegator, context);
 
         // process style attributes
@@ -139,7 +141,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
         final View mainView = inflater.inflate(layoutResourceId, delegator);
 
         mHeaderView = mainView.findViewById(R.id.time_header);
-        mHeaderView.setBackground(a.getDrawable(R.styleable.TimePicker_headerBackground));
+        mHeaderView.setBackgroundColor(a.getColor(R.styleable.TimePicker_headerBackground, Color.TRANSPARENT));
 
         // Set up hour/minute labels.
         mHourView = mHeaderView.findViewById(R.id.hours);
@@ -329,7 +331,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
         if (mIs24HourView) {
             return currentHour;
         } else {
-            switch(mRadialTimePickerView.getAmOrPm()) {
+            switch (mRadialTimePickerView.getAmOrPm()) {
                 case PM:
                     return (currentHour % HOURS_IN_HALF_DAY) + HOURS_IN_HALF_DAY;
                 case AM:
@@ -714,9 +716,9 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
 
     /**
      * The time separator is defined in the Unicode CLDR and cannot be supposed to be ":".
-     *
+     * <p>
      * See http://unicode.org/cldr/trac/browser/trunk/common/main
-     *
+     * <p>
      * We pass the correct "skeleton" depending on 12 or 24 hours view and then extract the
      * separator as the character which is just after the hour marker in the returned pattern.
      */
@@ -790,7 +792,6 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
      * For keyboard mode, processes key events.
      *
      * @param keyCode the pressed key.
-     *
      * @return true if the key was successfully processed, false otherwise.
      */
     private boolean processKeyUp(int keyCode) {
@@ -841,8 +842,8 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
      * Try to start keyboard mode with the specified key.
      *
      * @param keyCode The key to use as the first press. Keyboard mode will not be started if the
-     * key is not legal to start with. Or, pass in -1 to get into keyboard mode without a starting
-     * key.
+     *                key is not legal to start with. Or, pass in -1 to get into keyboard mode without a starting
+     *                key.
      */
     private void tryStartingKbMode(int keyCode) {
         if (keyCode == -1 || addKeyIfLegal(keyCode)) {
@@ -945,7 +946,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
      * timepicker's values.
      *
      * @param allowEmptyDisplay if true, then if the typedTimes is empty, use the placeholder text.
-     * Otherwise, revert to the timepicker's values.
+     *                          Otherwise, revert to the timepicker's values.
      */
     private void updateDisplay(boolean allowEmptyDisplay) {
         if (!allowEmptyDisplay && mTypedTimes.isEmpty()) {
@@ -1008,9 +1009,8 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
      * Get the currently-entered time, as integer values of the hours and minutes typed.
      *
      * @param enteredZeros A size-2 boolean array, which the caller should initialize, and which
-     * may then be used for the caller to know whether zeros had been explicitly entered as either
-     * hours of minutes. This is helpful for deciding whether to show the dashes, or actual 0's.
-     *
+     *                     may then be used for the caller to know whether zeros had been explicitly entered as either
+     *                     hours of minutes. This is helpful for deciding whether to show the dashes, or actual 0's.
      * @return A size-3 int array. The first value will be the hours, the second value will be the
      * minutes, and the third will be either AM or PM.
      */
@@ -1021,7 +1021,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
             int keyCode = mTypedTimes.get(mTypedTimes.size() - 1);
             if (keyCode == getAmOrPmKeyCode(AM)) {
                 amOrPm = AM;
-            } else if (keyCode == getAmOrPmKeyCode(PM)){
+            } else if (keyCode == getAmOrPmKeyCode(PM)) {
                 amOrPm = PM;
             }
             startIndex = 2;
@@ -1032,14 +1032,14 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
             int val = getValFromKeyCode(mTypedTimes.get(mTypedTimes.size() - i));
             if (i == startIndex) {
                 minute = val;
-            } else if (i == startIndex+1) {
+            } else if (i == startIndex + 1) {
                 minute += 10 * val;
                 if (enteredZeros != null && val == 0) {
                     enteredZeros[1] = true;
                 }
-            } else if (i == startIndex+2) {
+            } else if (i == startIndex + 2) {
                 hour = val;
-            } else if (i == startIndex+3) {
+            } else if (i == startIndex + 3) {
                 hour += 10 * val;
                 if (enteredZeros != null && val == 0) {
                     enteredZeros[0] = true;
@@ -1047,7 +1047,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
             }
         }
 
-        return new int[] { hour, minute, amOrPm };
+        return new int[]{hour, minute, amOrPm};
     }
 
     /**
@@ -1066,7 +1066,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
                 final char pmChar = pmText.charAt(i);
                 if (amChar != pmChar) {
                     // There should be 4 events: a down and up for both AM and PM.
-                    final KeyEvent[] events = kcm.getEvents(new char[] { amChar, pmChar });
+                    final KeyEvent[] events = kcm.getEvents(new char[]{amChar, pmChar});
                     if (events != null && events.length == 4) {
                         mAmKeyCode = events[0].getKeyCode();
                         mPmKeyCode = events[2].getKeyCode();

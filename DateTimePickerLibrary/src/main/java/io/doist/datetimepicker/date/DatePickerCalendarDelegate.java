@@ -22,6 +22,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -37,12 +38,13 @@ import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
 import io.doist.datetimepicker.R;
 import io.doist.datetimepicker.util.DateTimeUtilsCompat;
 import io.doist.datetimepicker.util.ViewStateUtils;
@@ -71,10 +73,14 @@ class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDelegate i
 
     private TextView mDayOfWeekView;
 
-    /** Layout that contains the current month, day, and year. */
+    /**
+     * Layout that contains the current month, day, and year.
+     */
     private LinearLayout mMonthDayYearLayout;
 
-    /** Clickable layout that contains the current day and year. */
+    /**
+     * Clickable layout that contains the current day and year.
+     */
     private LinearLayout mMonthAndDayLayout;
 
     private TextView mHeaderMonthTextView;
@@ -148,9 +154,9 @@ class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDelegate i
             mDayOfWeekView.setTextAppearance(context, dayOfWeekTextAppearanceResId);
         }
 
-        mDayOfWeekView.setBackground(a.getDrawable(R.styleable.DatePicker_dayOfWeekBackground));
+        mDayOfWeekView.setBackgroundColor(a.getColor(R.styleable.DatePicker_dayOfWeekBackground, Color.TRANSPARENT));
 
-        dateLayout.setBackground(a.getDrawable(R.styleable.DatePicker_headerBackground));
+        dateLayout.setBackgroundColor(a.getColor(R.styleable.DatePicker_headerBackground, Color.TRANSPARENT));
 
         final int headerSelectedTextColor = a.getColor(
                 R.styleable.DatePicker_headerSelectedTextColor, defaultHighlightColor);
@@ -233,7 +239,7 @@ class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDelegate i
      * Gets a calendar for locale bootstrapped with the value of a given calendar.
      *
      * @param oldCalendar The old calendar.
-     * @param locale The locale.
+     * @param locale      The locale.
      */
     private Calendar getCalendarForLocale(Calendar oldCalendar, Locale locale) {
         if (oldCalendar == null) {
@@ -643,9 +649,8 @@ class DatePickerCalendarDelegate extends DatePicker.AbstractDatePickerDelegate i
         /**
          * Constructor called from {@link DatePicker#onSaveInstanceState()}
          */
-        private SavedState(Parcelable superState, int year, int month, int day,
-                long minDate, long maxDate, int currentView, int listPosition,
-                int listPositionOffset) {
+        private SavedState(Parcelable superState, int year, int month, int day, long minDate, long maxDate,
+                           int currentView, int listPosition, int listPositionOffset) {
             super(superState);
             mSelectedYear = year;
             mSelectedMonth = month;
