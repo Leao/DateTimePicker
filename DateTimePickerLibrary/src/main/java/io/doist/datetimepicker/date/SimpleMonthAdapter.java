@@ -87,6 +87,7 @@ class SimpleMonthAdapter extends BaseAdapter {
 
     void setCalendarTextColor(ColorStateList colors) {
         mCalendarTextColors = colors;
+        notifyDataSetChanged();
     }
 
     /**
@@ -144,10 +145,10 @@ class SimpleMonthAdapter extends BaseAdapter {
             v.setLayoutParams(params);
             v.setClickable(true);
             v.setOnDayClickListener(mOnDayClickListener);
+        }
 
-            if (mCalendarTextColors != null) {
-                v.setTextColor(mCalendarTextColors);
-            }
+        if (mCalendarTextColors != null) {
+            v.setTextColor(mCalendarTextColors);
         }
 
         final int minMonth = mMinDate.get(Calendar.MONTH);
