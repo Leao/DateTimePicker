@@ -290,6 +290,8 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
         if (mIs24HourView) {
             mAmPmLayout.setVisibility(View.GONE);
         } else {
+            mAmPmLayout.setVisibility(View.VISIBLE);
+
             // Ensure that AM/PM layout is in the correct position.
             final String dateTimePattern = getBestTimePattern(mCurrentLocale, false);
             final boolean amPmAtStart = dateTimePattern.startsWith("a");
