@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AlertDialog;
+
 import io.doist.datetimepicker.R;
 import io.doist.datetimepicker.time.OnTimeSetListener;
 import io.doist.datetimepicker.time.TimePicker;
@@ -21,11 +22,11 @@ public class TimePickerDialogFragmentDelegate extends PickerDialogFragmentDelega
 
     protected OnTimeSetListener mOnTimeSetListener;
 
-    public static Bundle createArguments(int hourOfDay, int minute, boolean is24Hour) {
+    public static Bundle createArguments(int hourOfDay, int minute, Boolean is24Hour) {
         Bundle arguments = new Bundle();
         arguments.putInt(KEY_HOUR_OF_DAY, hourOfDay);
         arguments.putInt(KEY_MINUTE, minute);
-        arguments.putBoolean(KEY_IS_24_HOUR, is24Hour);
+        arguments.putSerializable(KEY_IS_24_HOUR, is24Hour);
         return arguments;
     }
 
@@ -41,7 +42,7 @@ public class TimePickerDialogFragmentDelegate extends PickerDialogFragmentDelega
         if (savedInstanceState == null) {
             int hourOfDay = arguments.getInt(KEY_HOUR_OF_DAY);
             int minute = arguments.getInt(KEY_MINUTE);
-            boolean is24Hour = arguments.getBoolean(KEY_IS_24_HOUR);
+            Boolean is24Hour = (Boolean) arguments.getSerializable(KEY_IS_24_HOUR);
 
             mTimePicker = view.findViewById(R.id.timePicker);
             mTimePicker.setCurrentHour(hourOfDay);

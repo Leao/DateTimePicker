@@ -21,6 +21,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+
 import io.doist.datetimepicker.time.OnTimeSetListener;
 import io.doist.datetimepicker.time.TimePicker;
 
@@ -44,8 +45,11 @@ public class TimePickerDialogFragmentCompat extends DialogFragment {
         return new TimePickerDialogFragmentDelegate();
     }
 
+    /**
+     * @param is24Hour true, for 24 hour format; false for 12 hour format; null, for automatic detection.
+     */
     public static TimePickerDialogFragmentCompat newInstance(OnTimeSetListener listener, int hourOfDay, int minute,
-                                                             boolean is24Hour) {
+                                                             Boolean is24Hour) {
         TimePickerDialogFragmentCompat fragment = new TimePickerDialogFragmentCompat();
         fragment.setArguments(TimePickerDialogFragmentDelegate.createArguments(hourOfDay, minute, is24Hour));
         fragment.setOnTimeSetListener(listener);

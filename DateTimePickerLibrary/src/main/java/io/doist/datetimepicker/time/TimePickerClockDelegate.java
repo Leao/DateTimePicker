@@ -97,7 +97,8 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     private boolean mAllowAutoAdvance;
     private int mInitialHourOfDay;
     private int mInitialMinute;
-    private boolean mIs24HourView;
+    private boolean mIs24HourMode;
+    private boolean mIs24HourModeFixed;
 
     // For hardware IME input.
     private char mPlaceholderText;
@@ -214,7 +215,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
         final Calendar calendar = Calendar.getInstance(mCurrentLocale);
         final int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
         final int currentMinute = calendar.get(Calendar.MINUTE);
-        initialize(currentHour, currentMinute, false /* 12h */, HOUR_INDEX);
+        initialize(currentHour, currentMinute, null, HOUR_INDEX);
     }
 
     private static class ClickActionDelegate extends AccessibilityDelegateCompat {
@@ -250,10 +251,16 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
         return maxWidth;
     }
 
-    private void initialize(int hourOfDay, int minute, boolean is24HourView, int index) {
+    private void initialize(int hourOfDay, int minute, Boolean is24HourMode, int index) {
         mInitialHourOfDay = hourOfDay;
         mInitialMinute = minute;
-        mIs24HourView = is24HourView;
+        if (is24HourMode == null) {
+            mIs24HourMode = DateFormat.is24HourFormat(mContext);
+            mIs24HourModeFixed = false;
+        } else {
+            mIs24HourMode = is24HourMode;
+            mIs24HourModeFixed = true;
+        }
         mInKbMode = false;
         updateUI(index);
     }
@@ -282,12 +289,12 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     }
 
     private void updateRadialPicker(int index) {
-        mRadialTimePickerView.initialize(mInitialHourOfDay, mInitialMinute, mIs24HourView);
+        mRadialTimePickerView.initialize(mInitialHourOfDay, mInitialMinute, mIs24HourMode);
         setCurrentItemShowing(index, false, true);
     }
 
     private void updateHeaderAmPm() {
-        if (mIs24HourView) {
+        if (mIs24HourMode) {
             mAmPmLayout.setVisibility(View.GONE);
         } else {
             mAmPmLayout.setVisibility(View.VISIBLE);
@@ -330,7 +337,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     @Override
     public Integer getCurrentHour() {
         int currentHour = mRadialTimePickerView.getCurrentHour();
-        if (mIs24HourView) {
+        if (mIs24HourMode) {
             return currentHour;
         } else {
             switch (mRadialTimePickerView.getAmOrPm()) {
@@ -373,10 +380,18 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
      */
     @Override
     public void setIs24Hour(Boolean is24Hour) {
-        if (is24Hour == mIs24HourView) {
+        boolean is24HourMode;
+        if (is24Hour == null) {
+            is24HourMode = DateFormat.is24HourFormat(mContext);
+            mIs24HourModeFixed = false;
+        } else {
+            is24HourMode = is24Hour;
+            mIs24HourModeFixed = true;
+        }
+        if (mIs24HourMode == is24HourMode) {
             return;
         }
-        mIs24HourView = is24Hour;
+        mIs24HourMode = is24HourMode;
         generateLegalTimesTree();
         int hour = mRadialTimePickerView.getCurrentHour();
         mInitialHourOfDay = hour;
@@ -391,7 +406,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
      */
     @Override
     public boolean is24Hour() {
-        return mIs24HourView;
+        return mIs24HourMode;
     }
 
     @Override
@@ -428,7 +443,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     @Override
     public Parcelable onSaveInstanceState(Parcelable superState) {
         return new SavedState(superState, getCurrentHour(), getCurrentMinute(),
-                is24Hour(), inKbMode(), getTypedTimes(), getCurrentItemShowing());
+                is24HourNullable(), inKbMode(), getTypedTimes(), getCurrentItemShowing());
     }
 
     @Override
@@ -459,7 +474,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     @Override
     public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
         int flags = DateUtils.FORMAT_SHOW_TIME;
-        if (mIs24HourView) {
+        if (mIs24HourMode) {
             flags |= DateUtils.FORMAT_24HOUR;
         } else {
             flags |= DateUtils.FORMAT_12HOUR;
@@ -479,6 +494,10 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         info.setClassName(TimePicker.class.getName());
+    }
+
+    private Boolean is24HourNullable() {
+        return mIs24HourModeFixed ? is24Hour() : null;
     }
 
     /**
@@ -533,12 +552,12 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
 
         private final int mHour;
         private final int mMinute;
-        private final boolean mIs24HourMode;
+        private final Boolean mIs24HourMode;
         private final boolean mInKbMode;
         private final ArrayList<Integer> mTypedTimes;
         private final int mCurrentItemShowing;
 
-        private SavedState(Parcelable superState, int hour, int minute, boolean is24HourMode,
+        private SavedState(Parcelable superState, int hour, int minute, Boolean is24HourMode,
                            boolean isKbMode, ArrayList<Integer> typedTimes,
                            int currentItemShowing) {
             super(superState);
@@ -554,7 +573,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
             super(in);
             mHour = in.readInt();
             mMinute = in.readInt();
-            mIs24HourMode = (in.readInt() == 1);
+            mIs24HourMode = (Boolean) in.readValue(Boolean.class.getClassLoader());
             mInKbMode = (in.readInt() == 1);
             mTypedTimes = in.readArrayList(getClass().getClassLoader());
             mCurrentItemShowing = in.readInt();
@@ -568,7 +587,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
             return mMinute;
         }
 
-        public boolean is24HourMode() {
+        public Boolean is24HourMode() {
             return mIs24HourMode;
         }
 
@@ -589,7 +608,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
             super.writeToParcel(dest, flags);
             dest.writeInt(mHour);
             dest.writeInt(mMinute);
-            dest.writeInt(mIs24HourMode ? 1 : 0);
+            dest.writeValue(mIs24HourMode);
             dest.writeInt(mInKbMode ? 1 : 0);
             dest.writeList(mTypedTimes);
             dest.writeInt(mCurrentItemShowing);
@@ -661,7 +680,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     }
 
     private void updateHeaderHour(int value, boolean announce) {
-        final String bestDateTimePattern = getBestTimePattern(mCurrentLocale, mIs24HourView);
+        final String bestDateTimePattern = getBestTimePattern(mCurrentLocale, mIs24HourMode);
         final int lengthPattern = bestDateTimePattern.length();
         boolean hourWithTwoDigit = false;
         char hourFormat = '\0';
@@ -683,7 +702,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
         } else {
             format = "%d";
         }
-        if (mIs24HourView) {
+        if (mIs24HourMode) {
             // 'k' means 1-24 hour
             if (hourFormat == 'k' && value == 0) {
                 value = 24;
@@ -725,7 +744,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
      * separator as the character which is just after the hour marker in the returned pattern.
      */
     private void updateHeaderSeparator() {
-        final String bestDateTimePattern = getBestTimePattern(mCurrentLocale, mIs24HourView);
+        final String bestDateTimePattern = getBestTimePattern(mCurrentLocale, mIs24HourMode);
         final String separatorText;
         // See http://www.unicode.org/reports/tr35/tr35-dates.html for hour formats
         final char[] hourFormats = {'H', 'h', 'K', 'k'};
@@ -819,7 +838,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
                 || keyCode == KeyEvent.KEYCODE_4 || keyCode == KeyEvent.KEYCODE_5
                 || keyCode == KeyEvent.KEYCODE_6 || keyCode == KeyEvent.KEYCODE_7
                 || keyCode == KeyEvent.KEYCODE_8 || keyCode == KeyEvent.KEYCODE_9
-                || (!mIs24HourView &&
+                || (!mIs24HourMode &&
                 (keyCode == getAmOrPmKeyCode(AM) || keyCode == getAmOrPmKeyCode(PM)))) {
             if (!mInKbMode) {
                 if (mRadialTimePickerView == null) {
@@ -859,8 +878,8 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     private boolean addKeyIfLegal(int keyCode) {
         // If we're in 24hour mode, we'll need to check if the input is full. If in AM/PM mode,
         // we'll need to see if AM/PM have been typed.
-        if ((mIs24HourView && mTypedTimes.size() == 4) ||
-                (!mIs24HourView && isTypedTimeFullyLegal())) {
+        if ((mIs24HourMode && mTypedTimes.size() == 4) ||
+                (!mIs24HourMode && isTypedTimeFullyLegal())) {
             return false;
         }
 
@@ -874,7 +893,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
         mDelegator.announceForAccessibility(String.format("%d", val));
         // Automatically fill in 0's if AM or PM was legally entered.
         if (isTypedTimeFullyLegal()) {
-            if (!mIs24HourView && mTypedTimes.size() <= 3) {
+            if (!mIs24HourMode && mTypedTimes.size() <= 3) {
                 mTypedTimes.add(mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
                 mTypedTimes.add(mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
             }
@@ -903,7 +922,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
      * Check if the time that has been typed so far is completely legal, as is.
      */
     private boolean isTypedTimeFullyLegal() {
-        if (mIs24HourView) {
+        if (mIs24HourMode) {
             // For 24-hour mode, the time is legal if the hours and minutes are each legal. Note:
             // getEnteredTime() will ONLY call isTypedTimeFullyLegal() when NOT in 24hour mode.
             int[] values = getEnteredTime(null);
@@ -933,7 +952,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
             int values[] = getEnteredTime(null);
             mRadialTimePickerView.setCurrentHour(values[0]);
             mRadialTimePickerView.setCurrentMinute(values[1]);
-            if (!mIs24HourView) {
+            if (!mIs24HourMode) {
                 mRadialTimePickerView.setAmOrPm(values[2]);
             }
             mTypedTimes.clear();
@@ -956,7 +975,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
             int minute = mRadialTimePickerView.getCurrentMinute();
             updateHeaderHour(hour, false);
             updateHeaderMinute(minute, false);
-            if (!mIs24HourView) {
+            if (!mIs24HourMode) {
                 updateAmPmLabelStates(hour < 12 ? AM : PM);
             }
             setCurrentItemShowing(mRadialTimePickerView.getCurrentItemShowing(), true, true);
@@ -974,7 +993,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
             mHourView.setSelected(false);
             mMinuteView.setText(minuteStr);
             mMinuteView.setSelected(false);
-            if (!mIs24HourView) {
+            if (!mIs24HourMode) {
                 updateAmPmLabelStates(values[2]);
             }
         }
@@ -1019,7 +1038,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
     private int[] getEnteredTime(boolean[] enteredZeros) {
         int amOrPm = -1;
         int startIndex = 1;
-        if (!mIs24HourView && isTypedTimeFullyLegal()) {
+        if (!mIs24HourMode && isTypedTimeFullyLegal()) {
             int keyCode = mTypedTimes.get(mTypedTimes.size() - 1);
             if (keyCode == getAmOrPmKeyCode(AM)) {
                 amOrPm = AM;
@@ -1107,7 +1126,7 @@ class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate impl
 
         // The root of the tree doesn't contain any numbers.
         mLegalTimesTree = new Node();
-        if (mIs24HourView) {
+        if (mIs24HourMode) {
             // We'll be re-using these nodes, so we'll save them.
             Node minuteFirstDigit = new Node(k0, k1, k2, k3, k4, k5);
             Node minuteSecondDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
