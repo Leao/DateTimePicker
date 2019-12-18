@@ -55,7 +55,6 @@ import io.doist.datetimepicker.R;
  * within the specified month.
  */
 class SimpleMonthView extends View {
-    private static final int DEFAULT_HEIGHT = 32;
     private static final int MIN_HEIGHT = 10;
 
     private static final int DEFAULT_SELECTED_DAY = -1;
@@ -102,7 +101,7 @@ class SimpleMonthView extends View {
     private int mWidth;
 
     // The height this view should draw at in pixels, set by height param
-    private int mRowHeight = DEFAULT_HEIGHT;
+    private int mRowHeight;
 
     // If this view contains the today
     private boolean mHasToday = false;
