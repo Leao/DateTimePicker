@@ -23,6 +23,7 @@
     <dimen name="timepicker_radial_picker_dimen">270dp</dimen>
 
     <!-- Used by SimpleMonthView -->
+    <dimen name="datepicker_day_picker_padding_horizontal">8dp</dimen>
     <dimen name="datepicker_day_number_size">12sp</dimen>
     <dimen name="datepicker_month_label_size">14sp</dimen>
     <dimen name="datepicker_month_day_label_text_size">12sp</dimen>
@@ -40,4 +41,5 @@
     <dimen name="datepicker_selected_date_year_size">24dp</dimen>
     <dimen name="datepicker_header_height">30dp</dimen>
     <dimen name="datepicker_header_text_size">14dp</dimen>
+    <dimen name="datepicker_simple_month_view_padding_horizontal">8dp</dimen>
 </resources>

@@ -164,6 +164,8 @@ class SimpleMonthView extends View {
         mStringBuilder = new StringBuilder(50);
         mFormatter = new Formatter(mStringBuilder, Locale.getDefault());
 
+        mPadding = res.getDimensionPixelSize(R.dimen.datepicker_day_picker_padding_horizontal);
+
         mMiniDayNumberTextSize = res.getDimensionPixelSize(R.dimen.datepicker_day_number_size);
         mMonthLabelTextSize = res.getDimensionPixelSize(R.dimen.datepicker_month_label_size);
         mMonthDayLabelTextSize = res.getDimensionPixelSize(
