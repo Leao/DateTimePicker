@@ -435,7 +435,7 @@ class SimpleMonthView extends View {
     }
 
     private void drawMonthTitle(Canvas canvas) {
-        final float x = (mWidth + 2 * mPadding) / 2f;
+        final float x = mWidth / 2f;
         final float y = (mMonthHeaderSize - mMonthDayLabelTextSize) / 2f;
         canvas.drawText(getMonthAndYearString(), x, y, mMonthTitlePaint);
     }
