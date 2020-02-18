@@ -1,5 +1,6 @@
 package io.doist.datetimepicker.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -36,7 +37,8 @@ public class DatePickerDialogFragmentDelegate extends PickerDialogFragmentDelega
 
     @SuppressWarnings("InflateParams")
     @Override
-    protected View onCreateDialogView(LayoutInflater inflater, Bundle savedInstanceState, Bundle arguments) {
+    protected View onCreateDialogView(Context context, LayoutInflater inflater, Bundle savedInstanceState,
+                                      Bundle arguments) {
         View view = inflater.inflate(R.layout.date_picker_dialog, null);
         mDatePicker = view.findViewById(R.id.datePicker);
         if (savedInstanceState == null) {

@@ -10,6 +10,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+
 import io.doist.datetimepicker.R;
 
 abstract class PickerDialogFragmentDelegate {
@@ -40,12 +41,13 @@ abstract class PickerDialogFragmentDelegate {
     @SuppressWarnings("InflateParams")
     @NonNull
     public final Dialog onCreateDialog(Context context, Bundle savedInstanceState, Bundle arguments) {
-        mView = onCreateDialogView(LayoutInflater.from(context), savedInstanceState, arguments);
+        mView = onCreateDialogView(context, LayoutInflater.from(context), savedInstanceState, arguments);
         mDialog = onBindDialogBuilder(onCreateDialogBuilder(context, 0), mView).create();
         return mDialog;
     }
 
-    protected abstract View onCreateDialogView(LayoutInflater inflater, Bundle savedInstanceState, Bundle arguments);
+    protected abstract View onCreateDialogView(Context context, LayoutInflater inflater, Bundle savedInstanceState,
+                                               Bundle arguments);
 
     /**
      * Allows sub-classes to easily customize AlertDialog. Like passing a custom {@code themeResId}.
