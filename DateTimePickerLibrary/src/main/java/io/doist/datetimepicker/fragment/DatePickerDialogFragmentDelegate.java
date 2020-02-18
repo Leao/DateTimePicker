@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AlertDialog;
+
 import io.doist.datetimepicker.R;
 import io.doist.datetimepicker.date.DatePicker;
 import io.doist.datetimepicker.date.OnDateSetListener;
@@ -61,18 +62,18 @@ public class DatePickerDialogFragmentDelegate extends PickerDialogFragmentDelega
     @Override
     protected AlertDialog.Builder onBindDialogBuilder(AlertDialog.Builder builder, View view) {
         return super.onBindDialogBuilder(builder, view)
-                    .setPositiveButton(R.string.done_label, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (mOnDateSetListener != null) {
-                                mOnDateSetListener.onDateSet(
-                                        mDatePicker,
-                                        mDatePicker.getYear(),
-                                        mDatePicker.getMonth(),
-                                        mDatePicker.getDayOfMonth());
-                            }
+                .setPositiveButton(R.string.done_label, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mOnDateSetListener != null) {
+                            mOnDateSetListener.onDateSet(
+                                    mDatePicker,
+                                    mDatePicker.getYear(),
+                                    mDatePicker.getMonth(),
+                                    mDatePicker.getDayOfMonth());
                         }
-                    });
+                    }
+                });
     }
 
     @Override

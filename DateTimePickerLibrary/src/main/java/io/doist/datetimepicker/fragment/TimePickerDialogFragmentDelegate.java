@@ -65,17 +65,17 @@ public class TimePickerDialogFragmentDelegate extends PickerDialogFragmentDelega
     @Override
     protected AlertDialog.Builder onBindDialogBuilder(AlertDialog.Builder builder, View view) {
         return super.onBindDialogBuilder(builder, view)
-                    .setPositiveButton(R.string.done_label, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (mOnTimeSetListener != null) {
-                                mOnTimeSetListener.onTimeSet(
-                                        mTimePicker,
-                                        mTimePicker.getCurrentHour(),
-                                        mTimePicker.getCurrentMinute());
-                            }
+                .setPositiveButton(R.string.done_label, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mOnTimeSetListener != null) {
+                            mOnTimeSetListener.onTimeSet(
+                                    mTimePicker,
+                                    mTimePicker.getCurrentHour(),
+                                    mTimePicker.getCurrentMinute());
                         }
-                    });
+                    }
+                });
     }
 
     @Override
