@@ -1,15 +1,15 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION as int
-    buildToolsVersion "$BUILD_TOOLS_VERSION"
+    compileSdkVersion compile_sdk_version as int
+    buildToolsVersion "$build_tools_version"
 
     defaultConfig {
-        minSdkVersion MIN_SDK_VERSION as int
-        targetSdkVersion TARGET_SDK_VERSION as int
+        minSdkVersion min_sdk_version as int
+        targetSdkVersion target_sdk_version as int
     }
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT_VERSION"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
 }
